@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: candidate-shortlisting-app
+    env: node
+    # Build both backend and frontend, and output the dist files
+    buildCommand: "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
+    startCommand: "npm start --prefix backend"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false # Requires manual setup in Render dashboard
+      - key: OPENROUTER_API_KEY
+        sync: false # Requires manual setup in Render dashboard

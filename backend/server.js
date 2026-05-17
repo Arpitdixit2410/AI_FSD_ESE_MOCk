@@ -20,14 +20,27 @@ const candidateRoutes = require('./routes/candidateRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 
+const path = require('path');
+
 // Mount routes
 app.use('/api/candidates', candidateRoutes); // Maps to /api/candidates
 app.use('/api/match', matchRoutes);         // Maps to /api/match
 app.use('/api/ai', aiRoutes);               // Maps to /api/ai/shortlist
 
-app.get('/', (req, res) => {
-  res.send('Candidate Shortlisting API is running');
-});
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(
+      path.resolve(__dirname, '../', 'frontend', 'dist', 'index.html')
+    )
+  );
+} else {
+  app.get('/', (req, res) => {
+    res.send('Candidate Shortlisting API is running');
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 
